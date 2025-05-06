@@ -5,14 +5,14 @@ import '../services/auth/auth_service.dart';
 
 /*
 * Login Page
-*un utilisateur peut se connecter avec :
+*a user can log himself with
 * - email
-* - mdp
+* - password
 *
 * -----------------------------------------------------
 *
-* si l'utilisateur est authentifié => redirection vers homepage
-* si le compte n'existe pas ,lien vers registerpage */
+* if user is authenticated  => redirection to homepage
+ */
 
 class LoginPage extends StatefulWidget {
   final void Function()? onTap;
