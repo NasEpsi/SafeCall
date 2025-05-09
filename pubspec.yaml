@@ -39,6 +39,10 @@ dependencies:
   cloud_firestore: ^5.6.7
   firebase_storage: ^12.4.5
   provider: ^6.1.5
+  google_sign_in: ^6.3.0
+  firebase_app_check: ^0.3.2+5
+
+
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +60,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/google.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

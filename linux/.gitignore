@@ -1,1 +1,3 @@
 flutter/ephemeral
+/lib/firebase_options.dart
+/firebase.json

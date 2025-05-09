@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "440887386996",
-    "project_id": "flutter-epsi",
-    "storage_bucket": "flutter-epsi.firebasestorage.app"
+    "project_number": "32066784602",
+    "project_id": "safecall-9875f",
+    "storage_bucket": "safecall-9875f.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:440887386996:android:c26b6eeda9d05376ba4221",
+        "mobilesdk_app_id": "1:32066784602:android:6e065c85697a740a553763",
         "android_client_info": {
           "package_name": "com.example.safecall"
         }
@@ -15,26 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCQILwuk0-mSf9pLnZkV9_zdIgsMlptQvM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:440887386996:android:0d1df0d166a5c7c7ba4221",
-        "android_client_info": {
-          "package_name": "com.flutter_epsi.flutter_epsi"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCQILwuk0-mSf9pLnZkV9_zdIgsMlptQvM"
+          "current_key": "AIzaSyAcWMAEkSmyDpMXH3sRr7k_LU1QXPZengc"
         }
       ],
       "services": {

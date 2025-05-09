@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../components/my_button.dart';
 import '../components/my_text_field.dart';
 import '../services/auth/auth_service.dart';
-import '../services/database/database_service.dart';
 
 /*
 *Register Page
@@ -32,144 +31,229 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _auth = AuthService();
-  final _db = DatabaseService();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-  TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
 
   // methode to create an account
-
   void register() async {
-    // if the password and the password again are the same, create the user
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
 
+    // if the password and the password again are the same, create the user
     if (passwordController.text == confirmPasswordController.text) {
       try {
+        // This method already saves user info to Firestore
         await _auth.registerEmailPassword(
             emailController.text,
-            passwordController.text
+            passwordController.text,
+            phoneController.text
         );
-        // if the account is created in Auth, we save the data in the database
-        await _db.saveUserInfoInFirebase(
-          email: emailController.text,
-        );
-      } catch (e) {
+        // Close loading dialog on success
         if (mounted) {
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        // Close loading dialog on error
+        if (mounted) {
+          Navigator.pop(context);
           showDialog(
             context: context,
-            builder: (context) => AlertDialog(
-              title: Text(e.toString()),
-            ),
+            builder: (context) =>
+                AlertDialog(
+                  title: const Text("Error"),
+                  content: Text(e.toString()),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("OK"),
+                    ),
+                  ],
+                ),
           );
         }
       }
     } else {
+      // Close loading dialog for password mismatch
+      Navigator.pop(context);
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Les mots de passes ne correspondent pas"),
-        ),
+        builder: (context) =>
+            AlertDialog(
+              title: const Text("Error"),
+              content: const Text("Les mots de passes ne correspondent pas"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
       );
     }
   }
 
+    // Methode pour se connecter avec Google
+    void signInWithGoogle() async {
+      try {
+        await _auth.signInWithGoogleService();
+      } catch (e) {
+        print(e);
+      }
+    }
+
   //UI
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25.0),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // logo
-              Icon(
-                Icons.lock_open_rounded,
-                size: 60,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-
-              const SizedBox(
-                height: 40,
-              ),
-
-              Text(
-                "Créez votre compte !",
-                style: TextStyle(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // logo
+                Icon(
+                  Icons.lock_open_rounded,
+                  size: 60,
                   color: Theme.of(context).colorScheme.primary,
-                  fontSize: 16,
                 ),
-              ),
 
-              const SizedBox(
-                height: 5,
-              ),
+                const SizedBox(
+                  height: 40,
+                ),
 
-              // champ email
-              MyTextField(
-                  controller: emailController,
-                  hintText: "Saisissez votre email...",
-                  obscureText: false),
+                Text(
+                  "Créez votre compte !",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
 
-              const SizedBox(
-                height: 15,
-              ),
+                const SizedBox(
+                  height: 5,
+                ),
 
-              // champMDP
-              MyTextField(
-                  controller: passwordController,
-                  hintText: "Saisissez votre mot de passe...",
-                  obscureText: true),
+                // champ email
+                MyTextField(
+                    controller: emailController,
+                    hintText: "Saisissez votre email...",
+                    obscureText: false),
 
-              const SizedBox(
-                height: 15,
-              ),
+                const SizedBox(
+                  height: 15,
+                ),
 
-              // Password confirmation
-              MyTextField(
-                  controller: confirmPasswordController,
-                  hintText: "Vérifiez votre mot de passe",
-                  obscureText: true),
+                // champ phone number
+                MyTextField(
+                  controller: phoneController,
+                  hintText: "Saisissez votre numéro de téléphone...",
+                  obscureText: false,
+                ),
 
-              const SizedBox(
-                height: 15,
-              ),
+                const SizedBox(
+                  height: 15,
+                ),
 
-              // button create account
-              MyButton(
-                text: "Creez votre compte",
-                onTap: register,
-              ),
+                // champMDP
+                MyTextField(
+                    controller: passwordController,
+                    hintText: "Saisissez votre mot de passe...",
+                    obscureText: true),
 
-              const SizedBox(
-                height: 15,
-              ),
+                const SizedBox(
+                  height: 15,
+                ),
 
-              // link to register page
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Déja un compte ?",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
+                // Password confirmation
+                MyTextField(
+                    controller: confirmPasswordController,
+                    hintText: "Vérifiez votre mot de passe",
+                    obscureText: true),
+
+                const SizedBox(
+                  height: 15,
+                ),
+
+                // button create account
+                MyButton(
+                  text: "Creez votre compte",
+                  onTap: register,
+                ),
+
+                const SizedBox(
+                  height: 15,
+                ),
+                Divider(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                  thickness: 1,
+                ),
+
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: signInWithGoogle,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.background,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Theme.of(context).colorScheme.primary),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/google.png', // Ton logo Google (à ajouter dans assets)
+                          height: 24,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Continuer avec Google",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 5),
-                  GestureDetector(
-                    onTap: widget.onTap,
-                    child: Text(
-                      "Connectez vous ",
+                ),
+
+                // link to register page
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Déja un compte ?",
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
-                  )
-                ],
-              )
-            ],
+                    const SizedBox(width: 5),
+                    GestureDetector(
+                      onTap: widget.onTap,
+                      child: Text(
+                        "Connectez vous ",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

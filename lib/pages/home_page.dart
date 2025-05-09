@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../components/my_drawer.dart';
+
+import 'main_page.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,11 +14,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const (),
+          builder: (context) => const MainPage(),
         ),
       );
     });

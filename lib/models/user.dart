@@ -7,8 +7,10 @@
 * A user is made with
 *
 *uid
-* name
 * email
+* - password ( in firebase auth )
+* - number_user
+* - provider (email, google, etc.)
 *
 * */
 
@@ -17,31 +19,41 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserProfile {
   final String uid;
   final String email;
-  final String numero;
-
-
+  final String numberUser;
+  final String provider;
+  final List<String> numbersBlocked; // Liste des IDs de numéros bloqués
+  final List<String> prefixesBlocked; // Liste des IDs de préfixes bloqués
 
   UserProfile({
     required this.uid,
     required this.email,
-    required this.numero
+    required this.numberUser,
+    this.provider = 'email',
+    this.numbersBlocked = const [],
+    this.prefixesBlocked = const [],
   });
 
-  // Converting a firestore file into a model user
+  // Conversion d'un document Firestore en modèle utilisateur
   factory UserProfile.fromDocument(DocumentSnapshot doc) {
     return UserProfile(
       uid: doc['uid'],
       email: doc['email'],
-      numero: doc['numero'],
+      numberUser: doc['number_user'] ?? '',
+      provider: doc['provider'] ?? 'email',
+      numbersBlocked: List<String>.from(doc['numbers_blocked'] ?? []),
+      prefixesBlocked: List<String>.from(doc['prefixes_blocked'] ?? []),
     );
   }
 
-  // Converting a model user into a firestore file
+  // Conversion du modèle utilisateur en document Firestore
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
       'email': email,
-      'numero': numero,
+      'number_user': numberUser,
+      'provider': provider,
+      'numbers_blocked': numbersBlocked,
+      'prefixes_blocked': prefixesBlocked,
     };
   }
 }

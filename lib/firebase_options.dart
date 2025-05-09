@@ -53,10 +53,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCQILwuk0-mSf9pLnZkV9_zdIgsMlptQvM',
-    appId: '1:440887386996:android:c26b6eeda9d05376ba4221',
-    messagingSenderId: '440887386996',
-    projectId: 'flutter-epsi',
-    storageBucket: 'flutter-epsi.firebasestorage.app',
+    apiKey: 'AIzaSyAcWMAEkSmyDpMXH3sRr7k_LU1QXPZengc',
+    appId: '1:32066784602:android:6e065c85697a740a553763',
+    messagingSenderId: '32066784602',
+    projectId: 'safecall-9875f',
+    storageBucket: 'safecall-9875f.firebasestorage.app',
   );
+
 }

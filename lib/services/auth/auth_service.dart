@@ -7,7 +7,7 @@
 *
 * -----------------------------------------------------
 *
-* login
+* login (email and password / Google)
 * logout
 * Create an account
 * Delete an account
@@ -16,11 +16,14 @@
 */
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../database/database_service.dart';
 
 class AuthService {
-
   // get the auth  instance
   final _auth = FirebaseAuth.instance;
+  final _googleSignIn = GoogleSignIn();
+  final _dbService = DatabaseService();
 
   // get the current user and his id
   User? getCurrentUser() => _auth.currentUser;
@@ -38,18 +41,69 @@ class AuthService {
       throw Exception(e.code);
     }
   }
-//logout
-  Future<void> logout() async {
-    await _auth.signOut();
-  }
-// creation
-  Future<UserCredential> registerEmailPassword(String email, password) async {
+
+  // Google sign in
+  Future<UserCredential?> signInWithGoogleService() async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // creating a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // when  connected return to user Credential
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      // if its a new user, saving data in firebase
+      if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+        await _dbService.saveUserInfoInFirebase(
+          email: userCredential.user?.email ?? '',
+          provider: 'google',
+          numberUser: '',
+        );
+      }
+
       return userCredential;
-    } on FirebaseAuthException catch(e){
-      throw Exception(e.code);
+    } catch (e) {
+      print(e);
+      throw Exception('Échec de la connexion avec Google');
     }
   }
 
+//logout
+  Future<void> logout() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
+  }
+
+// creation
+  Future<UserCredential> registerEmailPassword(
+      String email, password, numberUser) async {
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // saving data in firestore
+      await _dbService.saveUserInfoInFirebase(
+        email: email,
+        provider: 'email',
+        numberUser: numberUser,
+      );
+
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.code);
+    }
+  }
 }
