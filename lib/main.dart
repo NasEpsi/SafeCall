@@ -21,6 +21,7 @@ void main() async {
 
   await FirebaseAuth.instance.signOut();
 
+  /// TODO: Enlever lors de la mise en prod
   String? token = await FirebaseAppCheck.instance.getToken(true);
   print("App Check debug token: $token");
 
