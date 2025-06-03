@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'main_page.dart';
-
+import '../helper/permission_helper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,21 +12,50 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const MainPage(),
-        ),
-      );
-    });
+    _checkPermissions();
   }
 
-  @override
+  Future<void> _checkPermissions() async {
+    bool hasPermissions = await PermissionService.checkPermissions();
+
+    if (!hasPermissions) {
+      bool granted = await PermissionService.requestPermissions();
+
+      if (!granted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Permissions requises'),
+            content: Text('Cette application a besoin d\'accéder aux appels et contacts pour fonctionner correctement.'),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  await PermissionService.openAppSettings();
+                },
+                child: Text('Ouvrir les paramètres'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+  }
+
   Widget build(BuildContext context) {
-    // Scaffold with drawer while navigation occurs
     return Scaffold(
-      body: const Center(
-        child: CircularProgressIndicator(),
+      appBar: AppBar(
+        title: const Text('Accueil'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Text(
+          'Bienvenue sur SafeCall !',
+          style: TextStyle(
+            fontSize: 18,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
       ),
     );
   }

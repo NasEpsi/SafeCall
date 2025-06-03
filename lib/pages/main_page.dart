@@ -16,7 +16,7 @@ class MainPage extends StatelessWidget {
           'Bienvenue !',
           style: TextStyle(
             fontSize: 24,
-            color: Theme.of(context).colorScheme.inversePrimary,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),

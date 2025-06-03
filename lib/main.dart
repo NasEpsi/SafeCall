@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:safecall/helper/navigate_pages.dart';
 import 'package:safecall/services/auth/auth_gate.dart';
 import 'package:safecall/services/auth/auth_service.dart';
 import 'package:safecall/services/database/database_provider.dart';
@@ -19,7 +20,6 @@ void main() async {
     androidProvider: AndroidProvider.debug,
   );
 
-  await FirebaseAuth.instance.signOut();
 
   /// TODO: Enlever lors de la mise en prod
   String? token = await FirebaseAppCheck.instance.getToken(true);

@@ -10,7 +10,7 @@
 * email
 * - password ( in firebase auth )
 * - number_user
-* - provider (email, google, etc.)
+* - provider (email, google)
 *
 * */
 
@@ -33,7 +33,7 @@ class UserProfile {
     this.prefixesBlocked = const [],
   });
 
-  // Conversion d'un document Firestore en modèle utilisateur
+  // Convert doc Firestore into user model
   factory UserProfile.fromDocument(DocumentSnapshot doc) {
     return UserProfile(
       uid: doc['uid'],
@@ -45,7 +45,7 @@ class UserProfile {
     );
   }
 
-  // Conversion du modèle utilisateur en document Firestore
+  // Convert user model in firestore doc
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,

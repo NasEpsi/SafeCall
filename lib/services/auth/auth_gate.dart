@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:safecall/helper/navigate_pages.dart';
 
 import '../../pages/home_page.dart';
 import 'login_or_register.dart';
@@ -24,7 +25,7 @@ class AuthGate extends StatelessWidget {
       body: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot){
         // utilisateur connecté
         if(snapshot.hasData){
-          return const HomePage();
+          return const NavigationPages();
         } else {
           return LoginOrRegister();
         }
